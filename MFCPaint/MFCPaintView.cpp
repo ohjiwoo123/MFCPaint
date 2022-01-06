@@ -127,13 +127,16 @@ void CMFCPaintView::OnPaint()
 	//				   // 그리기 메시지에 대해서는 CView::OnPaint()을(를) 호출하지 마십시오.
 
 	CBrush* OldBrush = NULL;
+	CPen* OldPen = NULL;
 	//// MyBrush 빨강색으로 
 	CBrush MyBrush(RGB(255, 0, 0));
+	CPen MyPen(0, 10, RGB(255, 0, 0));
 
 	if (m_bFill)
 	{
 		// 빨간색 
 		OldBrush = dc.SelectObject(&MyBrush);
+		OldPen = dc.SelectObject(&MyPen);
 	}
 
 	////////////////////////////////////////////////////
@@ -154,6 +157,7 @@ void CMFCPaintView::OnPaint()
 	if (m_bFill)
 	{
 		dc.SelectObject(OldBrush);
+		dc.SelectObject(OldPen);
 	}
 }
 
