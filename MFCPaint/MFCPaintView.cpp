@@ -1,6 +1,5 @@
 ﻿
 // MFCPaintView.cpp: CMFCPaintView 클래스의 구현
-//
 
 #include "pch.h"
 #include "framework.h"
@@ -17,7 +16,6 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
 
 // CMFCPaintView
 
@@ -120,67 +118,44 @@ CMFCPaintDoc* CMFCPaintView::GetDocument() const // 디버그되지 않은 버�
 }
 #endif //_DEBUG
 
-
 // CMFCPaintView 메시지 처리기
-
 
 void CMFCPaintView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-					   // TODO: 여기에 메시지 처리기 코드를 추가합니다.
-					   // 그리기 메시지에 대해서는 CView::OnPaint()을(를) 호출하지 마십시오.
+	//				   // TODO: 여기에 메시지 처리기 코드를 추가합니다.
+	//				   // 그리기 메시지에 대해서는 CView::OnPaint()을(를) 호출하지 마십시오.
 
-	//CBrush* SelectObject(CBrush * pBrush);
-	CBrush* OldBrush;
-	// MyBrush 빨강색으로 
+	CBrush* OldBrush = NULL;
+	//// MyBrush 빨강색으로 
 	CBrush MyBrush(RGB(255, 0, 0));
-	//OldBrush = (CBrush*)dc.SelectObject(MyBrush);
-	//DeleteObject(MyBrush);
-	
 
+	if (m_bFill)
+	{
+		// 빨간색 
+		OldBrush = dc.SelectObject(&MyBrush);
+	}
 
+	////////////////////////////////////////////////////
 	switch (m_nShape) 
 	{
 		case 0:		// 직선
-		{
 			dc.MoveTo(m_ptStart);
 			dc.LineTo(m_ptEnd);
-		}
-		break;
+			break;
 		case 1:		// 사각형
-		{
-			if (m_bFill)
-			{
-				OldBrush = (CBrush*)dc.SelectObject(MyBrush);
-				dc.Rectangle(m_ptStart.x, m_ptStart.y, m_ptEnd.x, m_ptEnd.y);
-				DeleteObject(MyBrush);
-			}
-			else
-			{
-				dc.Rectangle(m_ptStart.x, m_ptStart.y, m_ptEnd.x, m_ptEnd.y);
-			}
-
-		}
-		break;
+			dc.Rectangle(m_ptStart.x, m_ptStart.y, m_ptEnd.x, m_ptEnd.y);
+			break;
 		case 2:		// 원
-		{
-			if (m_bFill)
-			{
-				OldBrush = (CBrush*)dc.SelectObject(MyBrush);
-				dc.Ellipse(m_ptStart.x, m_ptStart.y, m_ptEnd.x, m_ptEnd.y);
-				DeleteObject(MyBrush);
-			}
-			else
-			{
-				dc.Ellipse(m_ptStart.x, m_ptStart.y, m_ptEnd.x, m_ptEnd.y);
-			}
-		}
-		break;
+			dc.Ellipse(m_ptStart.x, m_ptStart.y, m_ptEnd.x, m_ptEnd.y);
+			break;
 	}
-
+	////////////////////////////////////////////////////	
+	if (m_bFill)
+	{
+		dc.SelectObject(OldBrush);
+	}
 }
-
-
 
 
 void CMFCPaintView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -200,8 +175,7 @@ void CMFCPaintView::OnMouseMove(UINT nFlags, CPoint point)
 
 	if (m_bDrag)
 	{
-		m_ptEnd.x = point.x;
-		m_ptEnd.y = point.y;
+		m_ptEnd = point;
 		RedrawWindow();
 	}
 
@@ -217,8 +191,7 @@ void CMFCPaintView::OnLButtonUp(UINT nFlags, CPoint point)
 		m_ptEnd = point;
 		RedrawWindow();
 		m_bDrag = FALSE;
-	}
-	
+	}	
 
 	CView::OnLButtonUp(nFlags, point);
 }
@@ -226,21 +199,18 @@ void CMFCPaintView::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CMFCPaintView::OnLine()
 {
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	m_nShape = 0;
 }
 
 
 void CMFCPaintView::OnRectangle()
 {
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	m_nShape = 1;
 }
 
 
 void CMFCPaintView::OnEllipse()
 {
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	m_nShape = 2;
 
 }
